@@ -3,6 +3,8 @@
     "description": "A package to optimize performance of Laravel Nova classes.",
     "keywords": [
         "chinleung",
+        "laravel",
+        "laravel-nova",
         "laravel-nova-optimizer"
     ],
     "homepage": "https://github.com/chinleung/laravel-nova-optimizer",
