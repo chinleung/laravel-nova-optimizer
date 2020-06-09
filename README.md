@@ -15,12 +15,6 @@ You can install the package via composer:
 composer require chinleung/laravel-nova-optimizer
 ```
 
-## Usage
-
-``` php
-// Usage description here
-```
-
 ### Testing
 
 ``` bash
