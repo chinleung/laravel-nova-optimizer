@@ -20,22 +20,28 @@ trait BindsSingletonDependencies
      *
      * @param  string  $name
      * @param  array  $arguments
-     * @return void
+     * @return mixed
      */
     public function __call($name, $arguments)
     {
-        if ($this->isNotABindDependenciesMethod($name)) {
-            trigger_error(
-                sprintf(
-                    'Call to undefined function: %s::%s().',
-                    get_class($this),
-                    $name
-                ),
-                E_USER_ERROR
+        if ($this->isBindDependenciesMethod($name)) {
+            return $this->bindDependencies(
+                Str::between($name, 'bind', 'Dependencies')
             );
         }
 
-        $this->bindDependencies(Str::between($name, 'bind', 'Dependencies'));
+        if (method_exists(get_parent_class($this), '__call')) {
+            return parent::__call($name, $arguments);
+        }
+
+        trigger_error(
+            sprintf(
+                'Call to undefined function: %s::%s().',
+                get_class($this),
+                $name
+            ),
+            E_USER_ERROR
+        );
     }
 
     /**
@@ -91,9 +97,9 @@ trait BindsSingletonDependencies
      * @param  string  $name
      * @return bool
      */
-    protected function isNotABindDependenciesMethod(string $name): bool
+    protected function isBindDependenciesMethod(string $name): bool
     {
-        return ! Str::startsWith($name, 'bind')
-            || ! Str::endsWith($name, 'Dependencies');
+        return Str::startsWith($name, 'bind')
+            && Str::endsWith($name, 'Dependencies');
     }
 }
