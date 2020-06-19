@@ -26,7 +26,8 @@ trait BindsSingletonDependencies
     {
         if ($this->isBindDependenciesMethod($name)) {
             return $this->bindDependencies(
-                Str::between($name, 'bind', 'Dependencies')
+                Str::between($name, 'bind', 'Dependencies'),
+                $arguments
             );
         }
 
@@ -48,9 +49,10 @@ trait BindsSingletonDependencies
      * Bind the dependencies for a key.
      *
      * @param  string  $key
+     * @param  array  $arguments
      * @return void
      */
-    protected function bindDependencies(string $key): void
+    protected function bindDependencies(string $key, array $arguments): void
     {
         if ($this->hasBoundDependency($key)) {
             return;
@@ -60,7 +62,7 @@ trait BindsSingletonDependencies
             throw new DependenciesNotFoundException($key);
         }
 
-        collect($this->{$method}())
+        collect($this->{$method}(...$arguments))
             ->reject(fn ($closure, $key) => app()->has($key))
             ->each(fn ($closure, $key) => app()->singleton($key, $closure));
 
